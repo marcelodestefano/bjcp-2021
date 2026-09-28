@@ -3,11 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Guia Completo de Estilos BJCP 2021</title>
+    <title>Guia de Estilos BJCP 2021 - Texto Completo</title>
     <style>
         :root {
             --bg-color: #0f172a;
             --card-bg: #1e293b;
+            --modal-bg: #1e293b;
             --accent: #f59e0b;
             --primary: #d97706;
             --text-color: #f8fafc;
@@ -21,6 +22,7 @@
             color: var(--text-color);
             margin: 0;
             padding: 20px;
+            line-height: 1.5;
         }
 
         .container {
@@ -36,15 +38,8 @@
         header h1 {
             color: var(--accent);
             margin-bottom: 6px;
-            font-size: 2.2rem;
         }
 
-        header p {
-            color: var(--text-muted);
-            font-size: 0.95rem;
-        }
-
-        /* Painel de Filtros */
         .filter-panel {
             background-color: var(--card-bg);
             border: 1px solid var(--border-color);
@@ -54,7 +49,6 @@
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
             gap: 15px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
         }
 
         .filter-group {
@@ -64,7 +58,6 @@
 
         .filter-group label {
             font-size: 0.85rem;
-            font-weight: 600;
             color: var(--text-muted);
             margin-bottom: 6px;
         }
@@ -75,21 +68,6 @@
             border: 1px solid var(--border-color);
             background-color: #0f172a;
             color: var(--text-color);
-            font-size: 0.9rem;
-        }
-
-        .filter-group input:focus, .filter-group select:focus {
-            outline: none;
-            border-color: var(--accent);
-        }
-
-        .results-info {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 15px;
-            color: var(--text-muted);
-            font-size: 0.9rem;
         }
 
         .styles-grid {
@@ -98,15 +76,12 @@
             gap: 20px;
         }
 
-        /* Cards de Estilos */
         .style-card {
             background-color: var(--card-bg);
             border: 1px solid var(--border-color);
             border-radius: 10px;
             padding: 18px;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
+            cursor: pointer;
             transition: transform 0.2s, border-color 0.2s;
         }
 
@@ -115,32 +90,12 @@
             border-color: var(--accent);
         }
 
-        .card-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 6px;
-        }
-
         .style-code {
             background-color: var(--primary);
             color: #fff;
             padding: 3px 8px;
             border-radius: 4px;
             font-weight: bold;
-            font-size: 0.85rem;
-        }
-
-        .style-name {
-            font-size: 1.15rem;
-            margin: 0;
-            color: #fff;
-        }
-
-        .category-name {
-            font-size: 0.8rem;
-            color: var(--text-muted);
-            margin-bottom: 12px;
         }
 
         .stats-grid {
@@ -151,398 +106,63 @@
             padding: 10px;
             border-radius: 6px;
             text-align: center;
-            margin-bottom: 10px;
-        }
-
-        .stat-item {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .stat-label {
-            font-size: 0.65rem;
-            color: var(--text-muted);
-            text-transform: uppercase;
+            margin-top: 10px;
         }
 
         .stat-value {
-            font-size: 0.8rem;
+            color: var(--accent);
             font-weight: bold;
-            color: var(--accent);
-            margin-top: 2px;
         }
 
-        .tags-container {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 4px;
+        /* Modal para Leitura Completa */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.8);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
         }
 
-        .tag-pill {
-            background-color: #334155;
-            color: #94a3b8;
-            font-size: 0.7rem;
-            padding: 2px 6px;
-            border-radius: 10px;
-        }
-    </style>
-</head>
-<body>
-
-<div class="container">
-    <header>
-        <h1>🍺 Guia Completo BJCP 2021</h1>
-        <p>Pesquisa estruturada de todos os estilos e parâmetros de cervejas do BJCP 2021</p>
-    </header>
-
-    <!-- Painel de Filtros -->
-    <div class="filter-panel">
-        <div class="filter-group">
-            <label for="searchInput">Busca por Palavra-Chave</label>
-            <input type="text" id="searchInput" placeholder="Ex: IPA, Stout, Trigo, Saison, Pilsen, Sour...">
-        </div>
-        <div class="filter-group">
-            <label for="categorySelect">Filtrar por Categoria</label>
-            <select id="categorySelect">
-                <option value="">Todas as Categorias</option>
-            </select>
-        </div>
-        <div class="filter-group">
-            <label for="abvInput">Teor Alcoólico (% ABV)</label>
-            <input type="number" id="abvInput" step="0.1" placeholder="Ex: 6.5">
-        </div>
-        <div class="filter-group">
-            <label for="ibuInput">Amargor Mínimo (IBU)</label>
-            <input type="number" id="ibuInput" placeholder="Ex: 40">
-        </div>
-    </div>
-
-    <div class="results-info">
-        <span id="resultsCount">Carregando estilos...</span>
-    </div>
-
-    <!-- Grid de Estilos -->
-    <div class="styles-grid" id="stylesGrid"></div>
-</div>
-
-<script>
-    // Banco de Dados Nativo com Todos os Estilos
-    const bjcpData = [
-        {"code": "1A", "name": "American Light Lager", "category": "1. Standard American Beer", "og": "1.028 - 1.040", "fg": "0.998 - 1.008", "ibu": "8 - 12", "srm": "2 - 3", "abv": "2.8% - 4.2%", "abvMin": 2.8, "abvMax": 4.2, "ibuMin": 8, "ibuMax": 12, "tags": ["session-strength", "pale-color", "bottom-fermented"]},
-        {"code": "1B", "name": "American Lager", "category": "1. Standard American Beer", "og": "1.040 - 1.050", "fg": "1.004 - 1.010", "ibu": "8 - 18", "srm": "2 - 3.5", "abv": "4.2% - 5.3%", "abvMin": 4.2, "abvMax": 5.3, "ibuMin": 8, "ibuMax": 18, "tags": ["standard-strength", "pale-color", "bottom-fermented"]},
-        {"code": "1C", "name": "Cream Ale", "category": "1. Standard American Beer", "og": "1.042 - 1.055", "fg": "1.006 - 1.012", "ibu": "8 - 20", "srm": "2.5 - 5", "abv": "4.2% - 5.6%", "abvMin": 4.2, "abvMax": 5.6, "ibuMin": 8, "ibuMax": 20, "tags": ["standard-strength", "pale-color"]},
-        {"code": "1D", "name": "American Wheat Beer", "category": "1. Standard American Beer", "og": "1.040 - 1.055", "fg": "1.008 - 1.013", "ibu": "15 - 30", "srm": "3 - 6", "abv": "4.0% - 5.5%", "abvMin": 4.0, "abvMax": 5.5, "ibuMin": 15, "ibuMax": 30, "tags": ["standard-strength", "wheat-beer-family"]},
-        {"code": "2A", "name": "International Pale Lager", "category": "2. International Lager", "og": "1.042 - 1.050", "fg": "1.008 - 1.012", "ibu": "18 - 25", "srm": "2 - 6", "abv": "4.5% - 6.0%", "abvMin": 4.5, "abvMax": 6.0, "ibuMin": 18, "ibuMax": 25, "tags": ["standard-strength", "bottom-fermented"]},
-        {"code": "2B", "name": "International Amber Lager", "category": "2. International Lager", "og": "1.042 - 1.055", "fg": "1.008 - 1.014", "ibu": "8 - 25", "srm": "6 - 14", "abv": "4.5% - 6.0%", "abvMin": 4.5, "abvMax": 6.0, "ibuMin": 8, "ibuMax": 25, "tags": ["amber-color", "bottom-fermented"]},
-        {"code": "2C", "name": "International Dark Lager", "category": "2. International Lager", "og": "1.044 - 1.056", "fg": "1.008 - 1.012", "ibu": "8 - 20", "srm": "14 - 22", "abv": "4.2% - 6.0%", "abvMin": 4.2, "abvMax": 6.0, "ibuMin": 8, "ibuMax": 20, "tags": ["dark-color", "bottom-fermented"]},
-        {"code": "3A", "name": "Czech Pale Lager", "category": "3. Czech Lager", "og": "1.028 - 1.044", "fg": "1.008 - 1.014", "ibu": "20 - 35", "srm": "3 - 6", "abv": "3.0% - 4.1%", "abvMin": 3.0, "abvMax": 4.1, "ibuMin": 20, "ibuMax": 35, "tags": ["session-strength", "bottom-fermented"]},
-        {"code": "3B", "name": "Czech Premium Pale Lager", "category": "3. Czech Lager", "og": "1.044 - 1.060", "fg": "1.013 - 1.017", "ibu": "30 - 45", "srm": "3.5 - 6", "abv": "4.2% - 5.8%", "abvMin": 4.2, "abvMax": 5.8, "ibuMin": 30, "ibuMax": 45, "tags": ["standard-strength", "pilsner-family"]},
-        {"code": "3C", "name": "Czech Amber Lager", "category": "3. Czech Lager", "og": "1.044 - 1.060", "fg": "1.013 - 1.017", "ibu": "20 - 35", "srm": "10 - 16", "abv": "4.4% - 5.8%", "abvMin": 4.4, "abvMax": 5.8, "ibuMin": 20, "ibuMax": 35, "tags": ["amber-color"]},
-        {"code": "3D", "name": "Czech Dark Lager", "category": "3. Czech Lager", "og": "1.044 - 1.060", "fg": "1.013 - 1.017", "ibu": "18 - 34", "srm": "17 - 35", "abv": "4.4% - 5.8%", "abvMin": 4.4, "abvMax": 5.8, "ibuMin": 18, "ibuMax": 34, "tags": ["dark-color"]},
-        {"code": "4A", "name": "Munich Helles", "category": "4. Pale Malty European Lager", "og": "1.044 - 1.048", "fg": "1.006 - 1.012", "ibu": "16 - 22", "srm": "3 - 5", "abv": "4.7% - 5.4%", "abvMin": 4.7, "abvMax": 5.4, "ibuMin": 16, "ibuMax": 22, "tags": ["malty"]},
-        {"code": "4B", "name": "Festbier", "category": "4. Pale Malty European Lager", "og": "1.054 - 1.057", "fg": "1.010 - 1.012", "ibu": "18 - 25", "srm": "4 - 6", "abv": "5.8% - 6.3%", "abvMin": 5.8, "abvMax": 6.3, "ibuMin": 18, "ibuMax": 25, "tags": ["malty"]},
-        {"code": "4C", "name": "Helles Bock", "category": "4. Pale Malty European Lager", "og": "1.064 - 1.072", "fg": "1.011 - 1.018", "ibu": "23 - 35", "srm": "6 - 9", "abv": "6.3% - 7.4%", "abvMin": 6.3, "abvMax": 7.4, "ibuMin": 23, "ibuMax": 35, "tags": ["bock-family"]},
-        {"code": "5A", "name": "German Leichtbier", "category": "5. Pale Bitter European Beer", "og": "1.026 - 1.034", "fg": "1.006 - 1.010", "ibu": "15 - 28", "srm": "1.5 - 4", "abv": "2.4% - 3.6%", "abvMin": 2.4, "abvMax": 3.6, "ibuMin": 15, "ibuMax": 28, "tags": ["session-strength"]},
-        {"code": "5B", "name": "Kölsch", "category": "5. Pale Bitter European Beer", "og": "1.044 - 1.050", "fg": "1.007 - 1.011", "ibu": "18 - 30", "srm": "3.5 - 5", "abv": "4.4% - 5.2%", "abvMin": 4.4, "abvMax": 5.2, "ibuMin": 18, "ibuMax": 30, "tags": ["top-fermented", "lagered"]},
-        {"code": "5C", "name": "German Helles Exportbier", "category": "5. Pale Bitter European Beer", "og": "1.050 - 1.058", "fg": "1.008 - 1.015", "ibu": "20 - 30", "srm": "4 - 6", "abv": "5.0% - 6.0%", "abvMin": 5.0, "abvMax": 6.0, "ibuMin": 20, "ibuMax": 30, "tags": ["pale-color"]},
-        {"code": "5D", "name": "German Pils", "category": "5. Pale Bitter European Beer", "og": "1.044 - 1.050", "fg": "1.008 - 1.013", "ibu": "22 - 40", "srm": "2 - 4", "abv": "4.4% - 5.2%", "abvMin": 4.4, "abvMax": 5.2, "ibuMin": 22, "ibuMax": 40, "tags": ["pilsner-family"]},
-        {"code": "6A", "name": "Märzen", "category": "6. Amber Malty European Lager", "og": "1.054 - 1.060", "fg": "1.010 - 1.014", "ibu": "18 - 24", "srm": "8 - 17", "abv": "5.6% - 6.3%", "abvMin": 5.6, "abvMax": 6.3, "ibuMin": 18, "ibuMax": 24, "tags": ["amber-color", "malty"]},
-        {"code": "6B", "name": "Rauchbier", "category": "6. Amber Malty European Lager", "og": "1.050 - 1.057", "fg": "1.012 - 1.016", "ibu": "20 - 30", "srm": "12 - 22", "abv": "4.8% - 6.0%", "abvMin": 4.8, "abvMax": 6.0, "ibuMin": 20, "ibuMax": 30, "tags": ["smoke"]},
-        {"code": "6C", "name": "Dunkles Bock", "category": "6. Amber Malty European Lager", "og": "1.064 - 1.072", "fg": "1.013 - 1.019", "ibu": "20 - 27", "srm": "14 - 22", "abv": "6.3% - 7.2%", "abvMin": 6.3, "abvMax": 7.2, "ibuMin": 20, "ibuMax": 27, "tags": ["bock-family"]},
-        {"code": "7A", "name": "Vienna Lager", "category": "7. Amber Bitter European Beer", "og": "1.048 - 1.055", "fg": "1.010 - 1.014", "ibu": "18 - 30", "srm": "9 - 15", "abv": "4.7% - 5.5%", "abvMin": 4.7, "abvMax": 5.5, "ibuMin": 18, "ibuMax": 30, "tags": ["amber-color"]},
-        {"code": "7B", "name": "Altbier", "category": "7. Amber Bitter European Beer", "og": "1.044 - 1.052", "fg": "1.008 - 1.014", "ibu": "25 - 50", "srm": "9 - 17", "abv": "4.3% - 5.5%", "abvMin": 4.3, "abvMax": 5.5, "ibuMin": 25, "ibuMax": 50, "tags": ["top-fermented"]},
-        {"code": "8A", "name": "Munich Dunkel", "category": "8. Dark European Lager", "og": "1.048 - 1.056", "fg": "1.010 - 1.016", "ibu": "18 - 28", "srm": "17 - 28", "abv": "4.5% - 5.6%", "abvMin": 4.5, "abvMax": 5.6, "ibuMin": 18, "ibuMax": 28, "tags": ["dark-color", "malty"]},
-        {"code": "8B", "name": "Schwarzbier", "category": "8. Dark European Lager", "og": "1.046 - 1.052", "fg": "1.010 - 1.016", "ibu": "20 - 30", "srm": "17 - 30", "abv": "4.4% - 5.4%", "abvMin": 4.4, "abvMax": 5.4, "ibuMin": 20, "ibuMax": 30, "tags": ["dark-color"]},
-        {"code": "9A", "name": "Doppelbock", "category": "9. Strong European Beer", "og": "1.072 - 1.112", "fg": "1.016 - 1.024", "ibu": "16 - 26", "srm": "6 - 25", "abv": "7.0% - 10.0%", "abvMin": 7.0, "abvMax": 10.0, "ibuMin": 16, "ibuMax": 26, "tags": ["bock-family"]},
-        {"code": "9B", "name": "Eisbock", "category": "9. Strong European Beer", "og": "1.078 - 1.120", "fg": "1.020 - 1.035", "ibu": "25 - 35", "srm": "17 - 30", "abv": "9.0% - 14.0%", "abvMin": 9.0, "abvMax": 14.0, "ibuMin": 25, "ibuMax": 35, "tags": ["very-high-strength"]},
-        {"code": "9C", "name": "Baltic Porter", "category": "9. Strong European Beer", "og": "1.060 - 1.090", "fg": "1.016 - 1.024", "ibu": "20 - 40", "srm": "17 - 30", "abv": "6.5% - 9.5%", "abvMin": 6.5, "abvMax": 9.5, "ibuMin": 20, "ibuMax": 40, "tags": ["porter-family"]},
-        {"code": "10A", "name": "Weissbier", "category": "10. German Wheat Beer", "og": "1.044 - 1.053", "fg": "1.008 - 1.014", "ibu": "8 - 15", "srm": "2 - 6", "abv": "4.3% - 5.6%", "abvMin": 4.3, "abvMax": 5.6, "ibuMin": 8, "ibuMax": 15, "tags": ["wheat-beer-family"]},
-        {"code": "10B", "name": "Dunkles Weissbier", "category": "10. German Wheat Beer", "og": "1.044 - 1.057", "fg": "1.008 - 1.014", "ibu": "10 - 18", "srm": "14 - 23", "abv": "4.3% - 5.6%", "abvMin": 4.3, "abvMax": 5.6, "ibuMin": 10, "ibuMax": 18, "tags": ["wheat-beer-family"]},
-        {"code": "10C", "name": "Weizenbock", "category": "10. German Wheat Beer", "og": "1.064 - 1.090", "fg": "1.015 - 1.022", "ibu": "15 - 30", "srm": "6 - 25", "abv": "6.5% - 9.0%", "abvMin": 6.5, "abvMax": 9.0, "ibuMin": 15, "ibuMax": 30, "tags": ["wheat-beer-family"]},
-        {"code": "11A", "name": "Ordinary Bitter", "category": "11. British Bitter", "og": "1.030 - 1.039", "fg": "1.007 - 1.011", "ibu": "25 - 35", "srm": "8 - 14", "abv": "3.2% - 3.8%", "abvMin": 3.2, "abvMax": 3.8, "ibuMin": 25, "ibuMax": 35, "tags": ["british-isles"]},
-        {"code": "11B", "name": "Best Bitter", "category": "11. British Bitter", "og": "1.040 - 1.048", "fg": "1.008 - 1.012", "ibu": "25 - 40", "srm": "8 - 16", "abv": "3.8% - 4.6%", "abvMin": 3.8, "abvMax": 4.6, "ibuMin": 25, "ibuMax": 40, "tags": ["british-isles"]},
-        {"code": "11C", "name": "Strong Bitter", "category": "11. British Bitter", "og": "1.048 - 1.060", "fg": "1.010 - 1.016", "ibu": "30 - 50", "srm": "8 - 18", "abv": "4.6% - 6.2%", "abvMin": 4.6, "abvMax": 6.2, "ibuMin": 30, "ibuMax": 50, "tags": ["british-isles"]},
-        {"code": "12A", "name": "British Golden Ale", "category": "12. Pale Commonwealth Beer", "og": "1.038 - 1.053", "fg": "1.006 - 1.012", "ibu": "20 - 45", "srm": "2 - 5", "abv": "3.8% - 5.0%", "abvMin": 3.8, "abvMax": 5.0, "ibuMin": 20, "ibuMax": 45, "tags": ["hoppy"]},
-        {"code": "12B", "name": "Australian Sparkling Ale", "category": "12. Pale Commonwealth Beer", "og": "1.038 - 1.050", "fg": "1.004 - 1.006", "ibu": "20 - 35", "srm": "4 - 7", "abv": "4.5% - 6.0%", "abvMin": 4.5, "abvMax": 6.0, "ibuMin": 20, "ibuMax": 35, "tags": ["pacific"]},
-        {"code": "12C", "name": "English IPA", "category": "12. Pale Commonwealth Beer", "og": "1.050 - 1.070", "fg": "1.010 - 1.015", "ibu": "40 - 60", "srm": "6 - 14", "abv": "5.0% - 7.5%", "abvMin": 5.0, "abvMax": 7.5, "ibuMin": 40, "ibuMax": 60, "tags": ["ipa-family"]},
-        {"code": "13A", "name": "Dark Mild", "category": "13. Brown British Beer", "og": "1.030 - 1.038", "fg": "1.008 - 1.013", "ibu": "10 - 25", "srm": "14 - 25", "abv": "3.0% - 3.8%", "abvMin": 3.0, "abvMax": 3.8, "ibuMin": 10, "ibuMax": 25, "tags": ["dark-color"]},
-        {"code": "13B", "name": "British Brown Ale", "category": "13. Brown British Beer", "og": "1.040 - 1.052", "fg": "1.008 - 1.013", "ibu": "20 - 30", "srm": "12 - 22", "abv": "4.2% - 5.9%", "abvMin": 4.2, "abvMax": 5.9, "ibuMin": 20, "ibuMax": 30, "tags": ["brown-ale-family"]},
-        {"code": "13C", "name": "English Porter", "category": "13. Brown British Beer", "og": "1.040 - 1.052", "fg": "1.008 - 1.014", "ibu": "18 - 35", "srm": "20 - 30", "abv": "4.0% - 5.4%", "abvMin": 4.0, "abvMax": 5.4, "ibuMin": 18, "ibuMax": 35, "tags": ["porter-family"]},
-        {"code": "14A", "name": "Scottish Light", "category": "14. Scottish Ale", "og": "1.030 - 1.035", "fg": "1.010 - 1.013", "ibu": "10 - 20", "srm": "17 - 25", "abv": "2.5% - 3.3%", "abvMin": 2.5, "abvMax": 3.3, "ibuMin": 10, "ibuMax": 20, "tags": ["malty"]},
-        {"code": "14B", "name": "Scottish Heavy", "category": "14. Scottish Ale", "og": "1.035 - 1.040", "fg": "1.010 - 1.015", "ibu": "10 - 20", "srm": "12 - 20", "abv": "3.3% - 3.9%", "abvMin": 3.3, "abvMax": 3.9, "ibuMin": 10, "ibuMax": 20, "tags": ["malty"]},
-        {"code": "14C", "name": "Scottish Export", "category": "14. Scottish Ale", "og": "1.040 - 1.060", "fg": "1.010 - 1.016", "ibu": "15 - 30", "srm": "12 - 20", "abv": "3.9% - 6.0%", "abvMin": 3.9, "abvMax": 6.0, "ibuMin": 15, "ibuMax": 30, "tags": ["malty"]},
-        {"code": "15A", "name": "Irish Red Ale", "category": "15. Irish Beer", "og": "1.036 - 1.046", "fg": "1.010 - 1.014", "ibu": "18 - 28", "srm": "9 - 14", "abv": "3.8% - 5.0%", "abvMin": 3.8, "abvMax": 5.0, "ibuMin": 18, "ibuMax": 28, "tags": ["irish"]},
-        {"code": "15B", "name": "Irish Stout", "category": "15. Irish Beer", "og": "1.036 - 1.044", "fg": "1.007 - 1.011", "ibu": "25 - 45", "srm": "25 - 40", "abv": "4.0% - 4.5%", "abvMin": 4.0, "abvMax": 4.5, "ibuMin": 25, "ibuMax": 45, "tags": ["stout-family", "roasty"]},
-        {"code": "15C", "name": "Irish Extra Stout", "category": "15. Irish Beer", "og": "1.052 - 1.062", "fg": "1.010 - 1.014", "ibu": "35 - 50", "srm": "30 - 40", "abv": "5.0% - 6.5%", "abvMin": 5.0, "abvMax": 6.5, "ibuMin": 35, "ibuMax": 50, "tags": ["stout-family", "roasty"]},
-        {"code": "16A", "name": "Sweet Stout", "category": "16. Dark British Beer", "og": "1.040 - 1.060", "fg": "1.012 - 1.024", "ibu": "20 - 40", "srm": "30 - 40", "abv": "4.0% - 6.0%", "abvMin": 4.0, "abvMax": 6.0, "ibuMin": 20, "ibuMax": 40, "tags": ["sweet", "stout-family"]},
-        {"code": "16B", "name": "Oatmeal Stout", "category": "16. Dark British Beer", "og": "1.045 - 1.065", "fg": "1.010 - 1.018", "ibu": "25 - 40", "srm": "22 - 40", "abv": "4.2% - 5.9%", "abvMin": 4.2, "abvMax": 5.9, "ibuMin": 25, "ibuMax": 40, "tags": ["stout-family"]},
-        {"code": "16C", "name": "Tropical Stout", "category": "16. Dark British Beer", "og": "1.056 - 1.075", "fg": "1.010 - 1.018", "ibu": "30 - 50", "srm": "30 - 40", "abv": "5.5% - 8.0%", "abvMin": 5.5, "abvMax": 8.0, "ibuMin": 30, "ibuMax": 50, "tags": ["sweet"]},
-        {"code": "16D", "name": "Foreign Extra Stout", "category": "16. Dark British Beer", "og": "1.056 - 1.075", "fg": "1.010 - 1.018", "ibu": "50 - 70", "srm": "30 - 40", "abv": "6.3% - 8.0%", "abvMin": 6.3, "abvMax": 8.0, "ibuMin": 50, "ibuMax": 70, "tags": ["stout-family"]},
-        {"code": "17A", "name": "British Strong Ale", "category": "17. Strong British Ale", "og": "1.055 - 1.080", "fg": "1.015 - 1.022", "ibu": "30 - 60", "srm": "8 - 22", "abv": "5.5% - 8.0%", "abvMin": 5.5, "abvMax": 8.0, "ibuMin": 30, "ibuMax": 60, "tags": ["strong-ale-family"]},
-        {"code": "17B", "name": "Old Ale", "category": "17. Strong British Ale", "og": "1.055 - 1.088", "fg": "1.015 - 1.022", "ibu": "30 - 60", "srm": "10 - 22", "abv": "5.5% - 9.0%", "abvMin": 5.5, "abvMax": 9.0, "ibuMin": 30, "ibuMax": 60, "tags": ["aged"]},
-        {"code": "17C", "name": "Wee Heavy", "category": "17. Strong British Ale", "og": "1.070 - 1.130", "fg": "1.018 - 1.040", "ibu": "17 - 35", "srm": "14 - 25", "abv": "6.5% - 10.0%", "abvMin": 6.5, "abvMax": 10.0, "ibuMin": 17, "ibuMax": 35, "tags": ["malty"]},
-        {"code": "17D", "name": "English Barley Wine", "category": "17. Strong British Ale", "og": "1.080 - 1.120", "fg": "1.018 - 1.030", "ibu": "35 - 70", "srm": "8 - 22", "abv": "8.0% - 12.0%", "abvMin": 8.0, "abvMax": 12.0, "ibuMin": 35, "ibuMax": 70, "tags": ["strong-ale-family"]},
-        {"code": "18A", "name": "Blonde Ale", "category": "18. Pale American Ale", "og": "1.038 - 1.054", "fg": "1.008 - 1.013", "ibu": "15 - 28", "srm": "3 - 6", "abv": "3.8% - 5.5%", "abvMin": 3.8, "abvMax": 5.5, "ibuMin": 15, "ibuMax": 28, "tags": ["pale-color"]},
-        {"code": "18B", "name": "American Pale Ale", "category": "18. Pale American Ale", "og": "1.045 - 1.060", "fg": "1.010 - 1.015", "ibu": "30 - 50", "srm": "5 - 10", "abv": "4.5% - 6.2%", "abvMin": 4.5, "abvMax": 6.2, "ibuMin": 30, "ibuMax": 50, "tags": ["hoppy"]},
-        {"code": "19A", "name": "American Amber Ale", "category": "19. Amber and Brown American Beer", "og": "1.045 - 1.060", "fg": "1.010 - 1.015", "ibu": "25 - 40", "srm": "10 - 17", "abv": "4.5% - 6.2%", "abvMin": 4.5, "abvMax": 6.2, "ibuMin": 25, "ibuMax": 40, "tags": ["hoppy", "amber-color"]},
-        {"code": "19B", "name": "California Common", "category": "19. Amber and Brown American Beer", "og": "1.048 - 1.054", "fg": "1.011 - 1.014", "ibu": "30 - 45", "srm": "9 - 14", "abv": "4.5% - 5.5%", "abvMin": 4.5, "abvMax": 5.5, "ibuMin": 30, "ibuMax": 45, "tags": ["amber-color"]},
-        {"code": "19C", "name": "American Brown Ale", "category": "19. Amber and Brown American Beer", "og": "1.045 - 1.060", "fg": "1.010 - 1.016", "ibu": "20 - 30", "srm": "18 - 35", "abv": "4.3% - 6.2%", "abvMin": 4.3, "abvMax": 6.2, "ibuMin": 20, "ibuMax": 30, "tags": ["brown-ale-family"]},
-        {"code": "20A", "name": "American Porter", "category": "20. American Porter and Stout", "og": "1.050 - 1.070", "fg": "1.012 - 1.018", "ibu": "25 - 50", "srm": "22 - 40", "abv": "4.8% - 6.5%", "abvMin": 4.8, "abvMax": 6.5, "ibuMin": 25, "ibuMax": 50, "tags": ["porter-family"]},
-        {"code": "20B", "name": "American Stout", "category": "20. American Porter and Stout", "og": "1.050 - 1.075", "fg": "1.010 - 1.022", "ibu": "35 - 75", "srm": "30 - 40", "abv": "5.0% - 7.0%", "abvMin": 5.0, "abvMax": 7.0, "ibuMin": 35, "ibuMax": 75, "tags": ["stout-family"]},
-        {"code": "20C", "name": "Imperial Stout", "category": "20. American Porter and Stout", "og": "1.075 - 1.115", "fg": "1.018 - 1.030", "ibu": "50 - 90", "srm": "30 - 40", "abv": "8.0% - 12.0%", "abvMin": 8.0, "abvMax": 12.0, "ibuMin": 50, "ibuMax": 90, "tags": ["very-high-strength", "stout-family"]},
-        {"code": "21A", "name": "American IPA", "category": "21. IPA", "og": "1.056 - 1.070", "fg": "1.008 - 1.014", "ibu": "40 - 70", "srm": "6 - 14", "abv": "5.5% - 7.5%", "abvMin": 5.5, "abvMax": 7.5, "ibuMin": 40, "ibuMax": 70, "tags": ["hoppy", "ipa-family"]},
-        {"code": "21B-Belgian", "name": "Belgian IPA", "category": "21. IPA", "og": "1.058 - 1.080", "fg": "1.008 - 1.016", "ibu": "50 - 100", "srm": "5 - 8", "abv": "6.2% - 9.5%", "abvMin": 6.2, "abvMax": 9.5, "ibuMin": 50, "ibuMax": 100, "tags": ["ipa-family"]},
-        {"code": "21B-Black", "name": "Black IPA", "category": "21. IPA", "og": "1.050 - 1.085", "fg": "1.010 - 1.018", "ibu": "50 - 90", "srm": "25 - 40", "abv": "5.5% - 9.0%", "abvMin": 5.5, "abvMax": 9.0, "ibuMin": 50, "ibuMax": 90, "tags": ["dark-color", "ipa-family"]},
-        {"code": "21B-Brown", "name": "Brown IPA", "category": "21. IPA", "og": "1.056 - 1.070", "fg": "1.008 - 1.016", "ibu": "40 - 70", "srm": "18 - 35", "abv": "5.5% - 7.5%", "abvMin": 5.5, "abvMax": 7.5, "ibuMin": 40, "ibuMax": 70, "tags": ["ipa-family"]},
-        {"code": "21B-Brut", "name": "Brut IPA", "category": "21. IPA", "og": "1.046 - 1.057", "fg": "0.990 - 1.004", "ibu": "20 - 30", "srm": "2 - 4", "abv": "6.0% - 7.5%", "abvMin": 6.0, "abvMax": 7.5, "ibuMin": 20, "ibuMax": 30, "tags": ["ipa-family"]},
-        {"code": "21B-Red", "name": "Red IPA", "category": "21. IPA", "og": "1.056 - 1.070", "fg": "1.008 - 1.016", "ibu": "40 - 70", "srm": "11 - 17", "abv": "5.5% - 7.5%", "abvMin": 5.5, "abvMax": 7.5, "ibuMin": 40, "ibuMax": 70, "tags": ["ipa-family"]},
-        {"code": "21B-Rye", "name": "Rye IPA", "category": "21. IPA", "og": "1.056 - 1.075", "fg": "1.008 - 1.014", "ibu": "50 - 75", "srm": "6 - 14", "abv": "5.5% - 8.0%", "abvMin": 5.5, "abvMax": 8.0, "ibuMin": 50, "ibuMax": 75, "tags": ["ipa-family"]},
-        {"code": "21B-White", "name": "White IPA", "category": "21. IPA", "og": "1.056 - 1.065", "fg": "1.010 - 1.016", "ibu": "40 - 70", "srm": "5 - 6", "abv": "5.5% - 7.0%", "abvMin": 5.5, "abvMax": 7.0, "ibuMin": 40, "ibuMax": 70, "tags": ["ipa-family"]},
-        {"code": "21C", "name": "Hazy IPA", "category": "21. IPA", "og": "1.060 - 1.085", "fg": "1.010 - 1.015", "ibu": "25 - 60", "srm": "3 - 7", "abv": "6.0% - 9.0%", "abvMin": 6.0, "abvMax": 9.0, "ibuMin": 25, "ibuMax": 60, "tags": ["hoppy", "ipa-family"]},
-        {"code": "22A", "name": "Double IPA", "category": "22. Strong American Ale", "og": "1.065 - 1.085", "fg": "1.008 - 1.018", "ibu": "60 - 100", "srm": "6 - 14", "abv": "7.5% - 10.0%", "abvMin": 7.5, "abvMax": 10.0, "ibuMin": 60, "ibuMax": 100, "tags": ["very-high-strength", "hoppy"]},
-        {"code": "22B", "name": "American Strong Ale", "category": "22. Strong American Ale", "og": "1.062 - 1.090", "fg": "1.014 - 1.024", "ibu": "50 - 100", "srm": "7 - 18", "abv": "6.3% - 10.0%", "abvMin": 6.3, "abvMax": 10.0, "ibuMin": 50, "ibuMax": 100, "tags": ["strong-ale-family"]},
-        {"code": "22C", "name": "American Barleywine", "category": "22. Strong American Ale", "og": "1.080 - 1.120", "fg": "1.016 - 1.030", "ibu": "50 - 100", "srm": "9 - 18", "abv": "8.0% - 12.0%", "abvMin": 8.0, "abvMax": 12.0, "ibuMin": 50, "ibuMax": 100, "tags": ["very-high-strength"]},
-        {"code": "22D", "name": "Wheatwine", "category": "22. Strong American Ale", "og": "1.080 - 1.120", "fg": "1.016 - 1.030", "ibu": "30 - 60", "srm": "6 - 14", "abv": "8.0% - 12.0%", "abvMin": 8.0, "abvMax": 12.0, "ibuMin": 30, "ibuMax": 60, "tags": ["wheat-beer-family"]},
-        {"code": "23A", "name": "Berliner Weisse", "category": "23. European Sour Ale", "og": "1.028 - 1.032", "fg": "1.003 - 1.006", "ibu": "3 - 8", "srm": "2 - 3", "abv": "2.8% - 3.8%", "abvMin": 2.8, "abvMax": 3.8, "ibuMin": 3, "ibuMax": 8, "tags": ["sour", "wheat-beer-family"]},
-        {"code": "23B", "name": "Flanders Red Ale", "category": "23. European Sour Ale", "og": "1.048 - 1.057", "fg": "1.002 - 1.012", "ibu": "10 - 25", "srm": "10 - 17", "abv": "4.6% - 6.5%", "abvMin": 4.6, "abvMax": 6.5, "ibuMin": 10, "ibuMax": 25, "tags": ["sour", "wood"]},
-        {"code": "23C", "name": "Oud Bruin", "category": "23. European Sour Ale", "og": "1.040 - 1.074", "fg": "1.008 - 1.012", "ibu": "20 - 25", "srm": "17 - 22", "abv": "4.0% - 8.0%", "abvMin": 4.0, "abvMax": 8.0, "ibuMin": 20, "ibuMax": 25, "tags": ["sour"]},
-        {"code": "23D", "name": "Lambic", "category": "23. European Sour Ale", "og": "1.040 - 1.054", "fg": "1.001 - 1.010", "ibu": "0 - 10", "srm": "3 - 6", "abv": "5.0% - 6.5%", "abvMin": 5.0, "abvMax": 6.5, "ibuMin": 0, "ibuMax": 10, "tags": ["sour", "wild-fermented"]},
-        {"code": "23E", "name": "Gueuze", "category": "23. European Sour Ale", "og": "1.040 - 1.054", "fg": "1.000 - 1.006", "ibu": "0 - 10", "srm": "5 - 6", "abv": "5.0% - 8.0%", "abvMin": 5.0, "abvMax": 8.0, "ibuMin": 0, "ibuMax": 10, "tags": ["sour", "wild-fermented"]},
-        {"code": "23F", "name": "Fruit Lambic", "category": "23. European Sour Ale", "og": "1.040 - 1.060", "fg": "1.000 - 1.010", "ibu": "0 - 10", "srm": "3 - 7", "abv": "5.0% - 7.0%", "abvMin": 5.0, "abvMax": 7.0, "ibuMin": 0, "ibuMax": 10, "tags": ["sour", "fruit"]},
-        {"code": "24A", "name": "Witbier", "category": "24. Belgian Ale", "og": "1.044 - 1.052", "fg": "1.008 - 1.012", "ibu": "8 - 20", "srm": "2 - 4", "abv": "4.5% - 5.5%", "abvMin": 4.5, "abvMax": 5.5, "ibuMin": 8, "ibuMax": 20, "tags": ["wheat-beer-family", "spice"]},
-        {"code": "24B", "name": "Belgian Pale Ale", "category": "24. Belgian Ale", "og": "1.048 - 1.054", "fg": "1.010 - 1.014", "ibu": "20 - 30", "srm": "8 - 14", "abv": "4.8% - 5.5%", "abvMin": 4.8, "abvMax": 5.5, "ibuMin": 20, "ibuMax": 30, "tags": ["pale-ale-family"]},
-        {"code": "24C", "name": "Bière de Garde", "category": "24. Belgian Ale", "og": "1.060 - 1.080", "fg": "1.008 - 1.016", "ibu": "18 - 28", "srm": "6 - 19", "abv": "6.0% - 8.5%", "abvMin": 6.0, "abvMax": 8.5, "ibuMin": 18, "ibuMax": 28, "tags": ["lagered"]},
-        {"code": "25A", "name": "Belgian Blond Ale", "category": "25. Strong Belgian Ale", "og": "1.062 - 1.075", "fg": "1.008 - 1.018", "ibu": "15 - 30", "srm": "4 - 6", "abv": "6.0% - 7.5%", "abvMin": 6.0, "abvMax": 7.5, "ibuMin": 15, "ibuMax": 30, "tags": ["top-fermented"]},
-        {"code": "25B", "name": "Saison", "category": "25. Strong Belgian Ale", "og": "1.048 - 1.065", "fg": "1.002 - 1.008", "ibu": "20 - 35", "srm": "5 - 14", "abv": "5.0% - 7.0%", "abvMin": 5.0, "abvMax": 7.0, "ibuMin": 20, "ibuMax": 35, "tags": ["top-fermented"]},
-        {"code": "25C", "name": "Belgian Golden Strong Ale", "category": "25. Strong Belgian Ale", "og": "1.070 - 1.095", "fg": "1.005 - 1.016", "ibu": "22 - 35", "srm": "3 - 6", "abv": "7.5% - 10.5%", "abvMin": 7.5, "abvMax": 10.5, "ibuMin": 22, "ibuMax": 35, "tags": ["top-fermented"]},
-        {"code": "26A", "name": "Belgian Single", "category": "26. Monastic Ale", "og": "1.044 - 1.054", "fg": "1.004 - 1.010", "ibu": "25 - 45", "srm": "3 - 5", "abv": "4.8% - 6.0%", "abvMin": 4.8, "abvMax": 6.0, "ibuMin": 25, "ibuMax": 45, "tags": ["hoppy"]},
-        {"code": "26B", "name": "Belgian Dubbel", "category": "26. Monastic Ale", "og": "1.062 - 1.075", "fg": "1.008 - 1.018", "ibu": "15 - 25", "srm": "10 - 17", "abv": "6.0% - 7.6%", "abvMin": 6.0, "abvMax": 7.6, "ibuMin": 15, "ibuMax": 25, "tags": ["malty"]},
-        {"code": "26C", "name": "Belgian Tripel", "category": "26. Monastic Ale", "og": "1.075 - 1.085", "fg": "1.008 - 1.014", "ibu": "20 - 40", "srm": "4.5 - 7", "abv": "7.5% - 9.5%", "abvMin": 7.5, "abvMax": 9.5, "ibuMin": 20, "ibuMax": 40, "tags": ["top-fermented"]},
-        {"code": "26D", "name": "Belgian Dark Strong Ale", "category": "26. Monastic Ale", "og": "1.075 - 1.110", "fg": "1.010 - 1.024", "ibu": "20 - 35", "srm": "12 - 22", "abv": "8.0% - 12.0%", "abvMin": 8.0, "abvMax": 12.0, "ibuMin": 20, "ibuMax": 35, "tags": ["malty"]},
-        {"code": "27A-Keller", "name": "Kellerbier", "category": "27. Historical Beer", "og": "1.044 - 1.054", "fg": "1.008 - 1.014", "ibu": "20 - 40", "srm": "3 - 17", "abv": "4.7% - 5.5%", "abvMin": 4.7, "abvMax": 5.5, "ibuMin": 20, "ibuMax": 40, "tags": ["historical-style"]},
-        {"code": "27A-Kentucky", "name": "Kentucky Common", "category": "27. Historical Beer", "og": "1.044 - 1.055", "fg": "1.010 - 1.018", "ibu": "15 - 30", "srm": "11 - 20", "abv": "4.0% - 5.5%", "abvMin": 4.0, "abvMax": 5.5, "ibuMin": 15, "ibuMax": 30, "tags": ["historical-style"]},
-        {"code": "27A-Lichtenhainer", "name": "Lichtenhainer", "category": "27. Historical Beer", "og": "1.032 - 1.040", "fg": "1.004 - 1.008", "ibu": "5 - 12", "srm": "3 - 6", "abv": "3.5% - 4.7%", "abvMin": 3.5, "abvMax": 4.7, "ibuMin": 5, "ibuMax": 12, "tags": ["smoke", "sour"]},
-        {"code": "27A-LondonBrown", "name": "London Brown Ale", "category": "27. Historical Beer", "og": "1.033 - 1.038", "fg": "1.012 - 1.015", "ibu": "15 - 20", "srm": "22 - 35", "abv": "2.8% - 3.6%", "abvMin": 2.8, "abvMax": 3.6, "ibuMin": 15, "ibuMax": 20, "tags": ["historical-style"]},
-        {"code": "27A-Grodziskie", "name": "Piwo Grodziskie", "category": "27. Historical Beer", "og": "1.028 - 1.032", "fg": "1.006 - 1.012", "ibu": "20 - 35", "srm": "3 - 6", "abv": "2.5% - 3.3%", "abvMin": 2.5, "abvMax": 3.3, "ibuMin": 20, "ibuMax": 35, "tags": ["smoke"]},
-        {"code": "27A-PreProLager", "name": "Pre-Prohibition Lager", "category": "27. Historical Beer", "og": "1.044 - 1.060", "fg": "1.010 - 1.015", "ibu": "25 - 40", "srm": "3 - 6", "abv": "4.5% - 6.0%", "abvMin": 4.5, "abvMax": 6.0, "ibuMin": 25, "ibuMax": 40, "tags": ["historical-style"]},
-        {"code": "27A-PreProPorter", "name": "Pre-Prohibition Porter", "category": "27. Historical Beer", "og": "1.046 - 1.060", "fg": "1.010 - 1.016", "ibu": "20 - 30", "srm": "20 - 30", "abv": "4.5% - 6.0%", "abvMin": 4.5, "abvMax": 6.0, "ibuMin": 20, "ibuMax": 30, "tags": ["porter-family"]},
-        {"code": "27A-Roggenbier", "name": "Roggenbier", "category": "27. Historical Beer", "og": "1.046 - 1.056", "fg": "1.010 - 1.014", "ibu": "10 - 20", "srm": "14 - 19", "abv": "4.5% - 6.0%", "abvMin": 4.5, "abvMax": 6.0, "ibuMin": 10, "ibuMax": 20, "tags": ["wheat-beer-family"]},
-        {"code": "27A-Sahti", "name": "Sahti", "category": "27. Historical Beer", "og": "1.076 - 1.120", "fg": "1.016 - 1.038", "ibu": "0 - 15", "srm": "4 - 22", "abv": "7.0% - 11.0%", "abvMin": 7.0, "abvMax": 11.0, "ibuMin": 0, "ibuMax": 15, "tags": ["spice"]},
-        {"code": "28A", "name": "Brett Beer", "category": "28. American Wild Ale", "og": "Varia", "fg": "Varia", "ibu": "Varia", "srm": "Varia", "abv": "Varia", "abvMin": 3.0, "abvMax": 12.0, "ibuMin": 0, "ibuMax": 60, "tags": ["wild-fermentation"]},
-        {"code": "28B", "name": "Mixed-Fermentation Sour Beer", "category": "28. American Wild Ale", "og": "Varia", "fg": "Varia", "ibu": "Varia", "srm": "Varia", "abv": "Varia", "abvMin": 3.0, "abvMax": 12.0, "ibuMin": 0, "ibuMax": 40, "tags": ["sour"]},
-        {"code": "28C", "name": "Wild Specialty Beer", "category": "28. American Wild Ale", "og": "Varia", "fg": "Varia", "ibu": "Varia", "srm": "Varia", "abv": "Varia", "abvMin": 3.0, "abvMax": 12.0, "ibuMin": 0, "ibuMax": 40, "tags": ["sour", "fruit"]},
-        {"code": "28D", "name": "Straight Sour Beer", "category": "28. American Wild Ale", "og": "1.048 - 1.065", "fg": "1.006 - 1.013", "ibu": "3 - 8", "srm": "2 - 3", "abv": "4.5% - 7.0%", "abvMin": 4.5, "abvMax": 7.0, "ibuMin": 3, "ibuMax": 8, "tags": ["sour"]},
-        {"code": "29A", "name": "Fruit Beer", "category": "29. Fruit Beer", "og": "Varia", "fg": "Varia", "ibu": "Varia", "srm": "Varia", "abv": "Varia", "abvMin": 2.5, "abvMax": 12.0, "ibuMin": 0, "ibuMax": 50, "tags": ["fruit"]},
-        {"code": "29B", "name": "Fruit and Spice Beer", "category": "29. Fruit Beer", "og": "Varia", "fg": "Varia", "ibu": "Varia", "srm": "Varia", "abv": "Varia", "abvMin": 2.5, "abvMax": 12.0, "ibuMin": 0, "ibuMax": 50, "tags": ["fruit", "spice"]},
-        {"code": "29C", "name": "Specialty Fruit Beer", "category": "29. Fruit Beer", "og": "Varia", "fg": "Varia", "ibu": "Varia", "srm": "Varia", "abv": "Varia", "abvMin": 2.5, "abvMax": 12.0, "ibuMin": 0, "ibuMax": 50, "tags": ["fruit"]},
-        {"code": "29D", "name": "Grape Ale", "category": "29. Fruit Beer", "og": "1.059 - 1.075", "fg": "1.004 - 1.013", "ibu": "10 - 30", "srm": "4 - 8", "abv": "6.0% - 8.5%", "abvMin": 6.0, "abvMax": 8.5, "ibuMin": 10, "ibuMax": 30, "tags": ["fruit"]},
-        {"code": "30A", "name": "Spice, Herb, or Vegetable Beer", "category": "30. Spiced Beer", "og": "Varia", "fg": "Varia", "ibu": "Varia", "srm": "Varia", "abv": "Varia", "abvMin": 2.5, "abvMax": 12.0, "ibuMin": 0, "ibuMax": 50, "tags": ["spice"]},
-        {"code": "30B", "name": "Autumn Seasonal Beer", "category": "30. Spiced Beer", "og": "Varia", "fg": "Varia", "ibu": "Varia", "srm": "Varia", "abv": "5.0% - 10.0%", "abvMin": 5.0, "abvMax": 10.0, "ibuMin": 0, "ibuMax": 40, "tags": ["spice"]},
-        {"code": "30C", "name": "Winter Seasonal Beer", "category": "30. Spiced Beer", "og": "Varia", "fg": "Varia", "ibu": "Varia", "srm": "Varia", "abv": "6.0% - 12.0%", "abvMin": 6.0, "abvMax": 12.0, "ibuMin": 0, "ibuMax": 50, "tags": ["spice"]},
-        {"code": "30D", "name": "Specialty Spice Beer", "category": "30. Spiced Beer", "og": "Varia", "fg": "Varia", "ibu": "Varia", "srm": "Varia", "abv": "Varia", "abvMin": 2.5, "abvMax": 12.0, "ibuMin": 0, "ibuMax": 50, "tags": ["spice"]},
-        {"code": "31A", "name": "Alternative Grain Beer", "category": "31. Alternative Fermentables Beer", "og": "Varia", "fg": "Varia", "ibu": "Varia", "srm": "Varia", "abv": "Varia", "abvMin": 2.5, "abvMax": 12.0, "ibuMin": 0, "ibuMax": 50, "tags": ["specialty-beer"]},
-        {"code": "31B", "name": "Alternative Sugar Beer", "category": "31. Alternative Fermentables Beer", "og": "Varia", "fg": "Varia", "ibu": "Varia", "srm": "Varia", "abv": "Varia", "abvMin": 2.5, "abvMax": 12.0, "ibuMin": 0, "ibuMax": 50, "tags": ["specialty-beer"]},
-        {"code": "32A", "name": "Classic Style Smoked Beer", "category": "32. Smoked Beer", "og": "Varia", "fg": "Varia", "ibu": "Varia", "srm": "Varia", "abv": "Varia", "abvMin": 3.0, "abvMax": 10.0, "ibuMin": 10, "ibuMax": 50, "tags": ["smoke"]},
-        {"code": "32B", "name": "Specialty Smoked Beer", "category": "32. Smoked Beer", "og": "VPara incluir **todos os 120+ estilos e subcategorias do BJCP 2021** sem estourar o limite de texto da conversa, a melhor prática de desenvolvimento web é **separar os dados da interface**:
-
-1. **`index.html`**: A página web com a interface gráfica, busca e filtros numéricos.
-2. **`styles.json`**: O banco de dados completo contendo a lista de todos os estilos e parâmetros físico-químicos.
-
-Dessa forma, o seu site no **GitHub Pages** fica leve, modular e carrega instantaneamente.
-
----
-
-### 1. Interface Web (`index.html`)
-
-Salve o código abaixo como `index.html` na raiz do seu repositório do GitHub:
-
-```html
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Guia Completo de Estilos BJCP 2021</title>
-    <style>
-        :root {
-            --bg-color: #0f172a;
-            --card-bg: #1e293b;
-            --accent: #f59e0b;
-            --primary: #d97706;
-            --text-color: #f8fafc;
-            --text-muted: #94a3b8;
-            --border-color: #334155;
-        }
-
-        body {
-            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            margin: 0;
-            padding: 20px;
-        }
-
-        .container {
-            max-width: 1280px;
-            margin: 0 auto;
-        }
-
-        header {
-            text-align: center;
-            margin-bottom: 25px;
-        }
-
-        header h1 {
-            color: var(--accent);
-            margin-bottom: 6px;
-            font-size: 2.2rem;
-        }
-
-        header p {
-            color: var(--text-muted);
-            font-size: 0.95rem;
-        }
-
-        /* Painel de Filtros */
-        .filter-panel {
-            background-color: var(--card-bg);
+        .modal-content {
+            background-color: var(--modal-bg);
             border: 1px solid var(--border-color);
             border-radius: 12px;
-            padding: 20px;
-            margin-bottom: 25px;
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-            gap: 15px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+            max-width: 850px;
+            width: 90%;
+            max-height: 85vh;
+            overflow-y: auto;
+            padding: 25px;
+            position: relative;
         }
 
-        .filter-group {
-            display: flex;
-            flex-direction: column;
+        .modal-close {
+            position: absolute;
+            top: 15px; right: 20px;
+            background: none; border: none;
+            color: var(--text-muted); font-size: 1.8rem; cursor: pointer;
         }
 
-        .filter-group label {
-            font-size: 0.85rem;
-            font-weight: 600;
-            color: var(--text-muted);
-            margin-bottom: 6px;
+        .modal-section {
+            margin-top: 15px;
+            border-top: 1px solid var(--border-color);
+            padding-top: 10px;
         }
 
-        .filter-group input, .filter-group select {
-            padding: 10px;
-            border-radius: 6px;
-            border: 1px solid var(--border-color);
-            background-color: #0f172a;
-            color: var(--text-color);
-            font-size: 0.9rem;
-        }
-
-        .filter-group input:focus, .filter-group select:focus {
-            outline: none;
-            border-color: var(--accent);
-        }
-
-        .results-info {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 15px;
-            color: var(--text-muted);
-            font-size: 0.9rem;
-        }
-
-        .styles-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
-            gap: 20px;
-        }
-
-        /* Cards de Estilos */
-        .style-card {
-            background-color: var(--card-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 10px;
-            padding: 18px;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            transition: transform 0.2s, border-color 0.2s;
-        }
-
-        .style-card:hover {
-            transform: translateY(-3px);
-            border-color: var(--accent);
-        }
-
-        .card-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 6px;
-        }
-
-        .style-code {
-            background-color: var(--primary);
-            color: #fff;
-            padding: 3px 8px;
-            border-radius: 4px;
-            font-weight: bold;
-            font-size: 0.85rem;
-        }
-
-        .style-name {
-            font-size: 1.15rem;
-            margin: 0;
-            color: #fff;
-        }
-
-        .category-name {
-            font-size: 0.8rem;
-            color: var(--text-muted);
-            margin-bottom: 12px;
-        }
-
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 6px;
-            background-color: #0f172a;
-            padding: 10px;
-            border-radius: 6px;
-            text-align: center;
-            margin-bottom: 10px;
-        }
-
-        .stat-item {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .stat-label {
-            font-size: 0.65rem;
-            color: var(--text-muted);
-            text-transform: uppercase;
-        }
-
-        .stat-value {
-            font-size: 0.8rem;
-            font-weight: bold;
-            color: var(--accent);
-            margin-top: 2px;
-        }
-
-        .tags-container {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 4px;
+        .modal-section h3 {
+            color: var(--primary);
+            margin-bottom: 4px;
         }
 
         .tag-pill {
             background-color: #334155;
             color: #94a3b8;
-            font-size: 0.7rem;
-            padding: 2px 6px;
-            border-radius: 10px;
+            font-size: 0.75rem;
+            padding: 2px 8px;
+            border-radius: 12px;
+            display: inline-block;
+            margin-right: 4px;
         }
     </style>
 </head>
@@ -551,149 +171,89 @@ Salve o código abaixo como `index.html` na raiz do seu repositório do GitHub:
 <div class="container">
     <header>
         <h1>🍺 Guia Completo BJCP 2021</h1>
-        <p>Pesquisa estruturada de todos os estilos e parâmetros de cervejas do BJCP 2021</p>
+        <p>Acesso integral a todas as descrições sensoriais, história, ingredientes e estatísticas do PDF oficial</p>
     </header>
 
-    <!-- Painel de Filtros -->
     <div class="filter-panel">
         <div class="filter-group">
-            <label for="searchInput">Busca por Palavra-Chave</label>
-            <input type="text" id="searchInput" placeholder="Ex: IPA, Stout, Trigo, Saison, Pilsen, Sour...">
-        </div>
-        <div class="filter-group">
-            <label for="categorySelect">Filtrar por Categoria</label>
-            <select id="categorySelect">
-                <option value="">Todas as Categorias</option>
-            </select>
+            <label for="searchInput">Busca por Palavra-Chave / Texto</label>
+            <input type="text" id="searchInput" placeholder="Ex: Lúpulo, Cravo, Banana, Pilsen, Carvalho...">
         </div>
         <div class="filter-group">
             <label for="abvInput">Teor Alcoólico (% ABV)</label>
-            <input type="number" id="abvInput" step="0.1" placeholder="Ex: 6.5">
+            <input type="number" id="abvInput" step="0.1" placeholder="Ex: 5.5">
         </div>
         <div class="filter-group">
             <label for="ibuInput">Amargor Mínimo (IBU)</label>
-            <input type="number" id="ibuInput" placeholder="Ex: 40">
+            <input type="number" id="ibuInput" placeholder="Ex: 30">
         </div>
     </div>
 
-    <div class="results-info">
-        <span id="resultsCount">Carregando banco de dados...</span>
-    </div>
-
-    <!-- Grid de Estilos -->
     <div class="styles-grid" id="stylesGrid"></div>
 </div>
 
-<script>
-    let bjcpData = [];
+<!-- Modal com o Texto Completo do Estilo -->
+<div class="modal-overlay" id="styleModal">
+    <div class="modal-content" id="modalBody"></div>
+</div>
 
+<script>
+    // Carrega o banco de dados gerado
     const searchInput = document.getElementById('searchInput');
-    const categorySelect = document.getElementById('categorySelect');
     const abvInput = document.getElementById('abvInput');
     const ibuInput = document.getElementById('ibuInput');
     const stylesGrid = document.getElementById('stylesGrid');
-    const resultsCount = document.getElementById('resultsCount');
+    const styleModal = document.getElementById('styleModal');
 
-    // Carrega o arquivo JSON dinamicamente
-    async function loadStyles() {
-        try {
-            const response = await fetch('styles.json');
-            bjcpData = await response.json();
-            initCategories();
-            renderStyles(bjcpData);
-        } catch (error) {
-            resultsCount.textContent = 'Erro ao carregar o arquivo styles.json.';
-            console.error(error);
-        }
-    }
-
-    function initCategories() {
-        const categories = [...new Set(bjcpData.map(item => item.category))].sort((a, b) => {
-            const numA = parseInt(a) || 999;
-            const numB = parseInt(b) || 999;
-            return numA - numB;
-        });
-
-        categories.forEach(cat => {
-            const opt = document.createElement('option');
-            opt.value = cat;
-            opt.textContent = cat;
-            categorySelect.appendChild(opt);
-        });
-    }
-
+    // Executa a renderização dos cards e modais de texto completo
     function renderStyles(styles) {
         stylesGrid.innerHTML = '';
-        resultsCount.textContent = `Exibindo ${styles.length} de ${bjcpData.length} estilo(s) de cerveja`;
-
-        if (styles.length === 0) {
-            stylesGrid.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: var(--text-muted); padding: 40px;">Nenhum estilo encontrado com os filtros selecionados.</p>';
-            return;
-        }
-
         styles.forEach(style => {
             const card = document.createElement('div');
             card.className = 'style-card';
+            card.onclick = () => openModal(style.code);
             card.innerHTML = `
-                <div>
-                    <div class="card-header">
-                        <h3 class="style-name">${style.name}</h3>
-                        <span class="style-code">${style.code}</span>
-                    </div>
-                    <div class="category-name">${style.category}</div>
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                    <h3 style="margin:0; color:#fff;">${style.name}</h3>
+                    <span class="style-code">${style.code}</span>
                 </div>
-                <div>
-                    <div class="stats-grid">
-                        <div class="stat-item"><span class="stat-label">ABV</span><span class="stat-value">${style.abv}</span></div>
-                        <div class="stat-item"><span class="stat-label">IBU</span><span class="stat-value">${style.ibu}</span></div>
-                        <div class="stat-item"><span class="stat-label">SRM</span><span class="stat-value">${style.srm}</span></div>
-                        <div class="stat-item"><span class="stat-label">OG</span><span class="stat-value">${style.og}</span></div>
-                    </div>
-                    <div class="tags-container">
-                        ${(style.tags || []).map(tag => `<span class="tag-pill">\${tag}</span>`).join('')}
-                    </div>
+                <div style="font-size:0.8rem; color:var(--text-muted); margin-bottom:10px;">${style.category}</div>
+                <p style="font-size:0.85rem; color:#cbd5e1;">${style.overall_impression || ''}</p>
+                <div class="stats-grid">
+                    <div><span class="stat-value">${style.stats.abv}</span><br><small>ABV</small></div>
+                    <div><span class="stat-value">${style.stats.ibu}</span><br><small>IBU</small></div>
+                    <div><span class="stat-value">${style.stats.srm}</span><br><small>SRM</small></div>
+                    <div><span class="stat-value">${style.stats.og}</span><br><small>OG</small></div>
                 </div>
             `;
             stylesGrid.appendChild(card);
         });
     }
 
-    function filterStyles() {
-        const query = searchInput.value.toLowerCase().trim();
-        const selectedCat = categorySelect.value;
-        const targetAbv = parseFloat(abvInput.value);
-        const minIbu = parseFloat(ibuInput.value);
+    function openModal(code) {
+        const style = bjcpData.find(s => s.code === code);
+        if (!style) return;
 
-        const filtered = bjcpData.filter(style => {
-            const textMatch = !query || 
-                style.name.toLowerCase().includes(query) || 
-                style.code.toLowerCase().includes(query) || 
-                style.category.toLowerCase().includes(query) ||
-                (style.tags && style.tags.some(t => t.toLowerCase().includes(query)));
+        document.getElementById('modalBody').innerHTML = `
+            <button class="modal-close" onclick="closeModal()">&times;</button>
+            <h2 style="color:var(--accent);">[${style.code}] ${style.name}</h2>
+            <p style="color:var(--text-muted);">${style.category}</p>
 
-            const catMatch = !selectedCat || style.category === selectedCat;
-
-            const abvMatch = isNaN(targetAbv) || 
-                (style.abvMin !== undefined && style.abvMax !== undefined && targetAbv >= style.abvMin && targetAbv <= style.abvMax) ||
-                style.abv === "Varia";
-
-            const ibuMatch = isNaN(minIbu) || 
-                (style.ibuMax !== undefined && style.ibuMax >= minIbu) ||
-                style.ibu === "Varia";
-
-            return textMatch && catMatch && abvMatch && ibuMatch;
-        });
-
-        renderStyles(filtered);
+            <div class="modal-section"><h3>Impressão Geral</h3><p>${style.overall_impression || 'Não informado.'}</p></div>
+            <div class="modal-section"><h3>Aroma</h3><p>${style.aroma || 'Não informado.'}</p></div>
+            <div class="modal-section"><h3>Aparência</h3><p>${style.appearance || 'Não informado.'}</p></div>
+            <div class="modal-section"><h3>Sabor</h3><p>${style.flavor || 'Não informado.'}</p></div>
+            <div class="modal-section"><h3>Sensação na Boca</h3><p>${style.mouthfeel || 'Não informado.'}</p></div>
+            ${style.comments ? `<div class="modal-section"><h3>Comentários</h3><p>\${style.comments}</p></div>` : ''}
+            ${style.history ? `<div class="modal-section"><h3>História</h3><p>\${style.history}</p></div>` : ''}
+            ${style.ingredients ? `<div class="modal-section"><h3>Ingredientes Característicos</h3><p>\${style.ingredients}</p></div>` : ''}
+            ${style.commercial_examples ? `<div class="modal-section"><h3>Exemplos Comerciais</h3><p>\${style.commercial_examples}</p></div>` : ''}
+            <div class="modal-section"><h3>Tags / Atributos Oficiais</h3><div>${(style.tags || []).map(t => `<span class="tag-pill">\${t}</span>`).join('')}</div></div>
+        `;
+        styleModal.style.display = 'flex';
     }
 
-    searchInput.addEventListener('input', filterStyles);
-    categorySelect.addEventListener('change', filterStyles);
-    abvInput.addEventListener('input', filterStyles);
-    ibuInput.addEventListener('input', filterStyles);
-
-    loadStyles();
+    function closeModal() { styleModal.style.display = 'none'; }
 </script>
-
 </body>
 </html>
