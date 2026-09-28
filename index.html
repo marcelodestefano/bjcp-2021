@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guia de Estilos BJCP 2021 - Pesquisa & Estudo</title>
+    <style>
+        :root {
+            --bg-color: #0f172a;
+            --card-bg: #1e293b;
+            --accent: #f59e0b;
+            --primary: #d97706;
+            --text-color: #f8fafc;
+            --text-muted: #94a3b8;
+            --border-color: #334155;
+        }
+
+        body {
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        header h1 {
+            color: var(--accent);
+            margin-bottom: 8px;
+            font-size: 2.2rem;
+        }
+
+        header p {
+            color: var(--text-muted);
+            font-size: 1rem;
+        }
+
+        /* Painel de Filtros */
+        .filter-panel {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 30px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .filter-group label {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            margin-bottom: 6px;
+        }
+
+        .filter-group input {
+            padding: 10px;
+            border-radius: 6px;
+            border: 1px solid var(--border-color);
+            background-color: #0f172a;
+            color: var(--text-color);
+            font-size: 0.95rem;
+        }
+
+        .filter-group input:focus {
+            outline: none;
+            border-color: var(--accent);
+        }
+
+        /* Grid de Estilos */
+        .results-info {
+            margin-bottom: 15px;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        .styles-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+            gap: 20px;
+        }
+
+        .style-card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: transform 0.2s, border-color 0.2s;
+        }
+
+        .style-card:hover {
+            transform: translateY(-3px);
+            border-color: var(--accent);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .style-code {
+            background-color: var(--primary);
+            color: #fff;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-weight: bold;
+            font-size: 0.85rem;
+        }
+
+        .style-name {
+            font-size: 1.2rem;
+            margin: 0;
+            color: #fff;
+        }
+
+        .category-name {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-bottom: 12px;
+        }
+
+        .impression {
+            font-size: 0.9rem;
+            line-height: 1.4;
+            color: #cbd5e1;
+            margin-bottom: 15px;
+        }
+
+        /* Tabela de Parâmetros / Estatísticas Vitais */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+            background-color: #0f172a;
+            padding: 10px;
+            border-radius: 6px;
+            text-align: center;
+            margin-bottom: 12px;
+        }
+
+        .stat-item {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .stat-label {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+        }
+
+        .stat-value {
+            font-size: 0.85rem;
+            font-weight: bold;
+            color: var(--accent);
+            margin-top: 2px;
+        }
+
+        .tags-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-top: 10px;
+        }
+
+        .tag-pill {
+            background-color: #334155;
+            color: #94a3b8;
+            font-size: 0.75rem;
+            padding: 2px 8px;
+            border-radius: 12px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>🍺 Guia de Estilos BJCP 2021</h1>
+        <p>Pesquisa rápida e estudo de parâmetros físico-químicos das cervejas</p>
+    </header>
+
+    <!-- Painel de Pesquisa e Filtros -->
+    <div class="filter-panel">
+        <div class="filter-group">
+            <label for="searchInput">Busca por Palavra-Chave</label>
+            <input type="text" id="searchInput" placeholder="Ex: IPA, Trigo, Café, Pilsen...">
+        </div>
+        <div class="filter-group">
+            <label for="abvInput">Teor Alcoólico (% ABV)</label>
+            <input type="number" id="abvInput" step="0.1" placeholder="Ex: 6.5">
+        </div>
+        <div class="filter-group">
+            <label for="ibuInput">Amargor Mínimo (IBU)</label>
+            <input type="number" id="ibuInput" placeholder="Ex: 40">
+        </div>
+        <div class="filter-group">
+            <label for="tagInput">Tag / Atributo</label>
+            <input type="text" id="tagInput" placeholder="Ex: sour, hoppy, lagered...">
+        </div>
+    </div>
+
+    <div class="results-info" id="resultsCount">Carregando estilos...</div>
+
+    <!-- Grid de Exibição dos Estilos -->
+    <div class="styles-grid" id="stylesGrid"></div>
+</div>
+
+<script>
+    // Banco de Dados Nativo BJCP 2021
+    const bjcpData = [
+        {
+            code: "1A",
+            name: "American Light Lager",
+            category: "1. Standard American Beer",
+            impression: "Lager muito clara, altamente carbonatada, de corpo baixo e sabor neutro com baixo amargor.",
+            og: "1.028 - 1.040", fg: "0.998 - 1.008", ibu: "8 - 12", srm: "2 - 3", abv: "2.8% - 4.2%",
+            abvMin: 2.8, abvMax: 4.2, ibuMin: 8, ibuMax: 12,
+            tags: ["session-strength", "pale-color", "bottom-fermented", "lagered"]
+        },
+        {
+            code: "3B",
+            name: "Czech Premium Pale Lager",
+            category: "3. Czech Lager",
+            impression: "Lager tcheca clara e refrescante com considerável caráter de malte e lúpulo nobre Saaz.",
+            og: "1.044 - 1.060", fg: "1.013 - 1.017", ibu: "30 - 45", srm: "3.5 - 6", abv: "4.2% - 5.8%",
+            abvMin: 4.2, abvMax: 5.8, ibuMin: 30, ibuMax: 45,
+            tags: ["standard-strength", "pale-color", "bottom-fermented", "hoppy"]
+        },
+        {
+            code: "5D",
+            name: "German Pils",
+            category: "5. Pale Bitter European Beer",
+            impression: "Lager alemã clara, límpida, amarga e bem definida (crisp), enfatizando aroma e sabor de lúpulos nobres.",
+            og: "1.044 - 1.050", fg: "1.008 - 1.013", ibu: "22 - 40", srm: "2 - 4", abv: "4.4% - 5.2%",
+            abvMin: 4.4, abvMax: 5.2, ibuMin: 22, ibuMax: 40,
+            tags: ["standard-strength", "pale-color", "bottom-fermented", "bitter"]
+        },
+        {
+            code: "10A",
+            name: "Weissbier",
+            category: "10. German Wheat Beer",
+            impression: "Cerveja de trigo alemã clara e refrescante com alta carbonatação, final seco e notas marcantes de banana e cravo.",
+            og: "1.044 - 1.053", fg: "1.008 - 1.014", ibu: "8 - 15", srm: "2 - 6", abv: "4.3% - 5.6%",
+            abvMin: 4.3, abvMax: 5.6, ibuMin: 8, ibuMax: 15,
+            tags: ["standard-strength", "pale-color", "top-fermented", "wheat-beer-family"]
+        },
+        {
+            code: "15B",
+            name: "Irish Stout",
+            category: "15. Irish Beer",
+            impression: "Cerveja preta com sabor torrado pronunciado de café, final seco e amargor moderado a alto.",
+            og: "1.036 - 1.044", fg: "1.007 - 1.011", ibu: "25 - 45", srm: "25 - 40", abv: "4.0% - 4.5%",
+            abvMin: 4.0, abvMax: 4.5, ibuMin: 25, ibuMax: 45,
+            tags: ["session-strength", "dark-color", "roasty", "stout-family"]
+        },
+        {
+            code: "21A",
+            name: "American IPA",
+            category: "21. IPA",
+            impression: "Cerveja americana clara, com teor alcoólico moderado-alto, intensamente lupulada e amarga, perfil limpo e final seco.",
+            og: "1.056 - 1.070", fg: "1.008 - 1.014", ibu: "40 - 70", srm: "6 - 14", abv: "5.5% - 7.5%",
+            abvMin: 5.5, abvMax: 7.5, ibuMin: 40, ibuMax: 70,
+            tags: ["high-strength", "pale-color", "hoppy", "bitter", "ipa-family"]
+        },
+        {
+            code: "25B",
+            name: "Saison",
+            category: "25. Strong Belgian Ale",
+            impression: "Ale belga artesanal de fazenda altamente atenuada, lupulada, bem seca, frutada e picante.",
+            og: "1.048 - 1.065", fg: "1.002 - 1.008", ibu: "20 - 35", srm: "5 - 14", abv: "5.0% - 7.0%",
+            abvMin: 5.0, abvMax: 7.0, ibuMin: 20, ibuMax: 35,
+            tags: ["standard-strength", "pale-color", "top-fermented", "spicy"]
+        },
+        {
+            code: "X4",
+            name: "Catharina Sour",
+            category: "Apêndice B: Estilos Locais (Brasil)",
+            impression: "Cerveja brasileira de trigo refrescante, ácida, de corpo leve e carbonatação elevada, destacando frutas frescas.",
+            og: "1.039 - 1.048", fg: "1.004 - 1.012", ibu: "2 - 8", srm: "2 - 6", abv: "4.0% - 5.5%",
+            abvMin: 4.0, abvMax: 5.5, ibuMin: 2, ibuMax: 8,
+            tags: ["craft-style", "fruit", "sour", "south-america"]
+        }
+    ];
+
+    // Elementos do DOM
+    const searchInput = document.getElementById('searchInput');
+    const abvInput = document.getElementById('abvInput');
+    const ibuInput = document.getElementById('ibuInput');
+    const tagInput = document.getElementById('tagInput');
+    const stylesGrid = document.getElementById('stylesGrid');
+    const resultsCount = document.getElementById('resultsCount');
+
+    // Função de Renderização dos Cards
+    function renderStyles(styles) {
+        stylesGrid.innerHTML = '';
+        resultsCount.textContent = `Exibindo ${styles.length} estilo(s) de cerveja`;
+
+        if (styles.length === 0) {
+            stylesGrid.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: var(--text-muted);">Nenhum estilo encontrado com os filtros selecionados.</p>';
+            return;
+        }
+
+        styles.forEach(style => {
+            const card = document.createElement('div');
+            card.className = 'style-card';
+            card.innerHTML = `
+                <div>
+                    <div class="card-header">
+                        <h3 class="style-name">${style.name}</h3>
+                        <span class="style-code">${style.code}</span>
+                    </div>
+                    <div class="category-name">${style.category}</div>
+                    <div class="impression">${style.impression}</div>
+                </div>
+                <div>
+                    <div class="stats-grid">
+                        <div class="stat-item"><span class="stat-label">ABV</span><span class="stat-value">${style.abv}</span></div>
+                        <div class="stat-item"><span class="stat-label">IBU</span><span class="stat-value">${style.ibu}</span></div>
+                        <div class="stat-item"><span class="stat-label">SRM</span><span class="stat-value">${style.srm}</span></div>
+                    </div>
+                    <div class="tags-container">
+                        ${style.tags.map(tag => `<span class="tag-pill">\${tag}</span>`).join('')}
+                    </div>
+                </div>
+            `;
+            stylesGrid.appendChild(card);
+        });
+    }
+
+    // Função Principal de Filtro
+    function filterStyles() {
+        const query = searchInput.value.toLowerCase().trim();
+        const targetAbv = parseFloat(abvInput.value);
+        const minIbu = parseFloat(ibuInput.value);
+        const tagQuery = tagInput.value.toLowerCase().trim();
+
+        const filtered = bjcpData.filter(style => {
+            // Filtro por Texto
+            const textMatch = !query || 
+                style.name.toLowerCase().includes(query) || 
+                style.code.toLowerCase().includes(query) || 
+                style.category.toLowerCase().includes(query) ||
+                style.impression.toLowerCase().includes(query);
+
+            // Filtro por ABV (se o valor informado estiver dentro da faixa do estilo)
+            const abvMatch = isNaN(targetAbv) || (targetAbv >= style.abvMin && targetAbv <= style.abvMax);
+
+            // Filtro por IBU
+            const ibuMatch = isNaN(minIbu) || style.ibuMax >= minIbu;
+
+            // Filtro por Tag
+            const tagMatch = !tagQuery || style.tags.some(t => t.toLowerCase().includes(tagQuery));
+
+            return textMatch && abvMatch && ibuMatch && tagMatch;
+        });
+
+        renderStyles(filtered);
+    }
+
+    // Event Listeners
+    searchInput.addEventListener('input', filterStyles);
+    abvInput.addEventListener('input', filterStyles);
+    ibuInput.addEventListener('input', filterStyles);
+    tagInput.addEventListener('input', filterStyles);
+
+    // Renderização Inicial
+    renderStyles(bjcpData);
+</script>
+
+</body>
+</html>
